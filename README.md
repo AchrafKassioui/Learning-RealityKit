@@ -19,8 +19,8 @@
 
 External code samples I found useful for my RealityKit projects:
 
-- [RealityView post process](https://developer.apple.com/forums/thread/806524), Apple, 2025
-- [Offscreen render](https://developer.apple.com/forums/thread/762238?answerId=801164022#801164022), Apple, 2025
+- Apple, [RealityView Post Process](https://developer.apple.com/forums/thread/806524), 2025
+- Apple, [Offscreen Render](https://developer.apple.com/forums/thread/762238?answerId=801164022#801164022), 2025
 
 ## Links
 
