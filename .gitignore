@@ -1,0 +1,3 @@
+/// Keep local drafts and macOS folder metadata out of the public repository.
+Drafts/
+.DS_Store
