@@ -2,8 +2,6 @@
 
 ## Articles
 
-Notes I wrote about various topics in RealityKit:
-
 - [TextComponent Bug](Articles/textcomponent-bug.md), 3 Aug 2026
 - [Physics Scales](Articles/physics-scales.md), 7 Mar 2026
 - [Contact Events](Articles/contact-events.md), 13 Feb 2026
@@ -19,12 +17,14 @@ Notes I wrote about various topics in RealityKit:
 
 ## Code Samples
 
-Code samples I found useful for my RealityKit projects:
+External code samples I found useful for my RealityKit projects:
 
 - [RealityView post process](https://developer.apple.com/forums/thread/806524), Apple, 2025
 - [Offscreen render](https://developer.apple.com/forums/thread/762238?answerId=801164022#801164022), Apple, 2025
 
-## Links & Resources
+## Links
+
+Interesting external resources:
 
 - [Dennis Ippel](https://rozengain.medium.com/)'s blog
 - Thomas Kumlehn, [Apple AR Quick Look / RealityOS](https://configxr.kreativekk.de/#/about/apple-ar-quick-look---realityos)
