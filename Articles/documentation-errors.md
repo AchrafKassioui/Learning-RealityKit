@@ -1,6 +1,6 @@
 # Documentation Errors
 
-Below are errors and typos found in the RealityKit official documentation.
+Below are errors and typos found in the [RealityKit official documentation](https://developer.apple.com/documentation/realitykit).
 
 ## ShaderGraphMaterial
 
