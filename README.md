@@ -4,7 +4,7 @@
 
 Notes I wrote about various topics in RealityKit:
 
-- [TextComponent Renders Inverted Text on Mac Catalyst](Articles/textcomponent-bug.md), 3 Aug 2026
+- [TextComponent Bug](Articles/textcomponent-bug.md), 3 Aug 2026
 - [Physics Scales](Articles/physics-scales.md), 7 Mar 2026
 - [Contact Events](Articles/contact-events.md), 13 Feb 2026
 - [Scene Type](Articles/realitykit-types.md), 9 Feb 2026
