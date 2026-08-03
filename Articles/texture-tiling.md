@@ -21,7 +21,7 @@ Texture:
 
 Tiling 4x4:
 
-<img src="../Media/RealityKit-TextureTiling-4x4.png" alt="RealityKit-TextureTiling-4x4" style="width:50%;" />
+<img src="../Media/RealityKit-TextureTiling-4x4.png" alt="RealityKit-TextureTiling-4x4" style="width:33%;" />
 
 We can apply other interesting transforms to the texture such as rotation:
 
@@ -29,4 +29,4 @@ We can apply other interesting transforms to the texture such as rotation:
 material.textureCoordinateTransform.rotation = .pi/4
 ```
 
-<img src="../Media/RealityKit-TextureRotation.png" alt="RealityKit-TextureRotation" style="width:50%;" />
+<img src="../Media/RealityKit-TextureRotation.png" alt="RealityKit-TextureRotation" style="width:33%;" />
