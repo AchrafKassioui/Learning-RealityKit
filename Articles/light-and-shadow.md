@@ -1,4 +1,4 @@
-## Light & Shadow
+# Light & Shadow
 
 *22 Dec 2025*
 

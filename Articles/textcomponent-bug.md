@@ -1,10 +1,12 @@
-# TextComponent Renders Inverted Text on Mac Catalyst
+# TextComponent Bug on Mac Catalyst
+
+*3 Aug 2026*
 
 On Mac Catalyst, RealityKit’s TextComponent renders its text vertically inverted. The issue reproduces with both ARView and RealityView. The same text renders correctly on iOS and in a native macOS RealityView application (not Catalyst). Tested on macOS 26 and macOS 27 beta, with Xcode 26 and Xcode 27 Beta.
 
 Here is a screenshot of a text entity with a text component rendering the string "Text Component":
 
-<img src="../../Archives/RealityKit/Mac Catalyst TextComponent Bug/TextComponent Catalyst Inverted Text.png" alt="TextComponent Catalyst Inverted Text" style="width:50%;" />
+<img src="../Media/TextComponent Catalyst Inverted Text.png" alt="TextComponent Catalyst Inverted Text" style="width:50%;" />
 
 ## Workaround
 
@@ -14,7 +16,7 @@ Here is a screenshot of a text entity with a text component rendering the string
  - Disable face culling on the material.
  - Invert the Y scale of the text entity.
 
-<img src="../../Archives/RealityKit/Mac Catalyst TextComponent Bug/TextComponent Catalyst Workaround.png" alt="TextComponent Catalyst Workaround" style="width:50%;" />
+<img src="../Media/TextComponent Catalyst Workaround.png" alt="TextComponent Catalyst Workaround" style="width:50%;" />
 
 ## Reproduce
 

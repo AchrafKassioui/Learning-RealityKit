@@ -1,4 +1,4 @@
-## Physics Speed
+# Physics Speed
 
 *29 Dec 2025*
 

@@ -1,4 +1,4 @@
-## Texture Tiling
+# Texture Tiling
 
 *7 Feb 2026*
 

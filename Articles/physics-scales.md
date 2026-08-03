@@ -1,4 +1,4 @@
-## Physics Scales
+# Physics Scales
 
 *7 Mar 2026*
 

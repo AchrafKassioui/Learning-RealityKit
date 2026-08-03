@@ -1,4 +1,4 @@
-## Contact Events
+# Contact Events
 
 *13 Feb 2026*
 

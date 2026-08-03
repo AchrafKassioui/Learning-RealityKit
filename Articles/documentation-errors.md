@@ -1,4 +1,4 @@
-## Documentation Errors
+# Documentation Errors
 
 *7 Feb 2026*
 
