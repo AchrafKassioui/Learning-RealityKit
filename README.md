@@ -4,8 +4,18 @@
 
 Notes I wrote about various topics in RealityKit:
 
-- [Contact Events](Articles/Contact Events.md)
-- 
+- [TextComponent Renders Inverted Text on Mac Catalyst](Articles/textcomponent-bug.md), 3 Aug 2026
+- [Physics Scales](Articles/physics-scales.md), 7 Mar 2026
+- [Contact Events](Articles/contact-events.md), 13 Feb 2026
+- [Scene Type](Articles/realitykit-types.md), 9 Feb 2026
+- [Documentation Errors](Articles/documentation-errors.md), 7 Feb 2026
+- [Texture Tiling](Articles/texture-tiling.md), 7 Feb 2026
+- [Scene Instances](Articles/scene-instances.md), 4 Feb 2026
+- [FOV & Hit Detection](Articles/fov-and-hit-detection.md), 1 Feb 2026
+- [Physics Speed](Articles/physics-speed.md), 29 Dec 2025
+- [Systems](Articles/systems.md), 23 Dec 2025
+- [Light & Shadow](Articles/light-and-shadow.md), 22 Dec 2025
+- [Gravity](Articles/gravity.md), 4 Oct 2025
 
 ## Code Samples
 
