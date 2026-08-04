@@ -27,8 +27,6 @@ https://github.com/user-attachments/assets/9f50492d-2dab-4e9d-b252-3782cadaf706
 
 <video src="../Media/RealityKit Sensor Entity.mov" width="33%" controls=""></video>
 
-[Watch the sensor collision video](../Media/RealityKit-Sensor-Entity.mov)
-
 ## Contact Event Order
 
 In the context of game development and interactive apps that are built around the update loop, it's crucial to understand the order of events. For example, some code must run strictly before or after the physics engine simulate one step.
