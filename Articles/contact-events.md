@@ -59,7 +59,7 @@ In the video, we see a blue cube that intersects a hemisphere (the sensor), whic
 
 In the context of game development and interactive apps that are built around the update loop, it's crucial to understand the order of events. For example, some code must run strictly before or after the physics engine simulate one step.
 
-In which order are contact events delivered? We can find out empirically by subscribing to both contact and physics simulation events, log them, and see what happens:
+In which order are contact events delivered? We can find out empirically by subscribing to both contact and physics simulation events and logging them:
 
 ```swift
 /// Event emitted when two bodies begin colliding
@@ -107,14 +107,18 @@ In this test, `CollisionEvents.Began` callbacks were delivered after `WillSimula
 
 To process all contacts delivered during one step, the callbacks can accumulate the events in a collection. That collection can then be processed in `DidSimulate`, after the current step, or in the following `WillSimulate`, immediately before the next step.
 
-When logic must run at a specific point relative to the physics simulation, use `PhysicsSimulationEvents` rather than a rendering update callback such as `System.update(context:)`.
+## Update Order
 
-RealityKit has a `SystemUpdateCondition` to use with systems update like this:
+When logic must run at a specific moment relative to the physics simulation, use `PhysicsSimulationEvents` rather than a rendering update callback such as `System.update(context:)`.
+
+RealityKit has a `SystemUpdateCondition` to use with system update like this:
 
 ```swift
+import RealityKit
+
 class UpdateSystem: System {
     
-    private static let query = EntityQuery(where: .has(RenderingRequestComponent.self))
+    private static let query = EntityQuery(where: .has(MyComponent.self))
     
     required init(scene: RealityKit.Scene) {
         
@@ -130,9 +134,9 @@ class UpdateSystem: System {
 }
 ```
 
-The condition tells what causes the system to update. But as of August 2026, the only available condition is `.rendering`. There is no other condition such as `.willSimulate`. Therefore systems' updates are rendering based.
+The condition specifies what causes the system to update. But as of August 2026, the only available condition is `.rendering`. There is no other condition such as `.willSimulate`. Therefore the default system updates are rendering based.
 
-In my projects, I create static fixed update functions, which are called by an `PhysicsSimulationEvents`, such as:
+In my physics-based projects, I create static fixed update functions, which are called by a `PhysicsSimulationEvents`:
 
 ```swift
 import RealityKit
@@ -140,6 +144,7 @@ import Combine
 
 class StartupSystem: System {
     
+    /// Store the subscription
     private let willSimulate: Cancellable
     
     required init(scene: Scene) {
