@@ -1,7 +1,5 @@
 # Learning RealityKit
 
-## Articles
-
 - [TextComponent Bug](Articles/textcomponent-bug.md), 3 Aug 2026
 - [Physics Scales](Articles/physics-scales.md), 7 Mar 2026
 - [Contact Events](Articles/contact-events.md), 13 Feb 2026
