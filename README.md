@@ -7,7 +7,7 @@
 - [Documentation Errors](Articles/documentation-errors.md), 7 Feb 2026
 - [Texture Tiling](Articles/texture-tiling.md), 7 Feb 2026
 - [Scene Instances](Articles/scene-instances.md), 4 Feb 2026
-- [FOV & Hit Detection](Articles/fov-and-hit-detection.md), 1 Feb 2026
+- [FOV Orientation & Hit Detection](Articles/fov-orientation-and-hit-detection.md.md), 1 Feb 2026
 - [Physics Speed](Articles/physics-speed.md), 29 Dec 2025
 - [Systems](Articles/systems.md), 23 Dec 2025
 - [Light & Shadow](Articles/light-and-shadow.md), 22 Dec 2025
