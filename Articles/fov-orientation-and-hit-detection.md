@@ -2,15 +2,15 @@
 
 *1 Feb 2026*
 
-ARView has convenience methods to do hit detection such as `entity(at:)` and `entities(at:)`. However, they only work if the camera FOV orientation is vertical.
-
-To do hit detection with any FOV orientation, a custom ray cast is needed. Below is a full implementation of hit detection that works with any perspective camera.
+ARView has convenience methods to do hit detection such as `entity(at:)` and `entities(at:)`. However, they only work if the camera field of view orientation is vertical. To do hit detection with any FOV orientation, a custom ray cast is needed.
 
 https://github.com/user-attachments/assets/e1ccddd5-15ed-41ee-aa1f-8c2204674725
 
 <video src="../Media/RealityKit-FOV-Orientation-Hit-Detection.mov" width="33%" controls=""></video>
 
 The video shows custom hit detection working regardless of FOV and orientation, unlike the built-in `entity(at:)`.
+
+Below is a full implementation of hit detection that works with any perspective camera. It converts ARView touch position into normalized screen coordinates, constructs a ray using the camera's FOV and orientation, transforms that ray into world space, and passes it to `Scene.raycast`.
 
 ```swift
 import SwiftUI
@@ -20,6 +20,11 @@ import RealityKit
 
 @main
 struct MyApp: App {
+    init() {
+        CameraRequestComponent.registerComponent()
+        CameraSystem.registerSystem()
+    }
+    
     var body: some SwiftUI.Scene {
         WindowGroup {
             ContentView()
@@ -30,7 +35,7 @@ struct MyApp: App {
 // MARK: SwiftUI
 
 struct ContentView: View {
-    @State private var fieldOfView: Float = 60
+    @State private var fieldOfView: Float = 60 /// Degrees
     @State private var fieldOfViewIsHorizontal = true
     @State private var useCustomHitDetection = false
     
@@ -71,9 +76,6 @@ struct RealityKitRepresentable: UIViewRepresentable {
     let useCustomHitDetection: Bool
     
     func makeUIView(context: Context) -> RealityKitView {
-        CameraRequestComponent.registerComponent()
-        CameraSystem.registerSystem()
-        
         let view = RealityKitView(frame: .zero)
         update(view)
         return view
@@ -113,7 +115,7 @@ class CameraSystem: System {
     static let query = EntityQuery(where: .has(CameraRequestComponent.self))
     
     required init(scene: RealityKit.Scene) {
-        CameraRequestComponent.registerComponent()
+        
     }
     
     func update(context: SceneUpdateContext) {
@@ -157,7 +159,6 @@ class RealityKitView: ARView {
         environment.background = .color(.darkGray)
         
         setupScene()
-        CameraSystem.registerSystem()
     }
     
     required init?(coder: NSCoder) {
