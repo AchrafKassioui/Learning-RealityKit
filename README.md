@@ -32,4 +32,4 @@ Interesting external resources:
 
 ---
 
-This page is not affiliated to Apple. Document started *27 Sep 2025*.
+This page is not affiliated with Apple. The RealityKit logo is a property of Apple. Document started *27 Sep 2025*.
