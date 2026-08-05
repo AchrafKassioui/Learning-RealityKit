@@ -8,6 +8,8 @@ To do hit detection with any FOV orientation, a custom ray cast is needed. Below
 
 https://github.com/user-attachments/assets/e1ccddd5-15ed-41ee-aa1f-8c2204674725
 
+<video src="../Media/RealityKit-FOV-Orientation-Hit-Detection.mov" width="33%" controls=""></video>
+
 The video shows custom hit detection working regardless of FOV and orientation, unlike the built-in `entity(at:)`.
 
 ```swift
