@@ -23,8 +23,8 @@ And:
 
 ## Spacing Constraint
 
-In my use of RealityKit physics engine, which is based on PhysX, I found a limitation when arranging physics bodies across adjacent planes.
+In my use of RealityKit physics engine (which is based on PhysX), I found a limitation while arranging entities across adjacent planes.
 
-Bodies placed on adjacent XY planes could collide when the distance between their collision shapes was less than ~4 cm. This became a problem when I overlaid flat entities across multiple depths.
+Bodies placed on adjacent XY planes could collide when the distance between their collision shapes was less than ~4 cm. This becomes a problem when I overlay flat entities across multiple depths.
 
 Leaving more space between the planes prevented the collisions. Another option is to use collision filters so that bodies on adjacent planes cannot collide, although that may not suit every design.

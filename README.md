@@ -1,6 +1,6 @@
 # Learning RealityKit
 
-<img src="Media/RealityKit_icon_512px.png" alt="RealityKit_icon_512px" style="width:25%;" />
+<img src="Media/RealityKit_icon_512px.png" alt="RealityKit Logo" style="width:25%;" />
 
 - [TextComponent Bug](Articles/textcomponent-bug.md), 3 Aug 2026
 - [Physics Scales](Articles/physics-scales.md), 7 Mar 2026
