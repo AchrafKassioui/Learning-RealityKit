@@ -2,9 +2,45 @@
 
 *22 Dec 2025*
 
-### Environment Lighting
+## Environment Lighting
 
-By default, RealityKit applies an image based light (commonly known as HDRI, or skybox). In order to override the default lighting, apply a black image instead:
+By default, `ARView` and `RealityView` apply image-based lighting (IBL), commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non emissive materials will appear flat black unless a light source is added.
+
+https://github.com/user-attachments/assets/012630a2-2d0a-46ac-a108-d59b4612988e
+
+<video src="../Media/RealityKit-IBL-Toggle.mov" width="33%" controls=""></video>
+
+In order to unify the environment lighting across all RealityKit renderers, we can use `ImageBasedLightComponent` and `ImageBasedLightReceiverComponent`. The first component holds the image. The second component specifies which entity tree is lit by the image.
+
+Below is code where a same root entity holds both components, therefore lighting all its descendants:
+
+```swift
+func setupIBL(holder: Entity, receiver: Entity) {
+    Task {
+        do {
+            let iblResource = try await EnvironmentResource(named: "IBL007")
+            var iblComponent = ImageBasedLightComponent(source: .single(iblResource))
+            /// Whether the IBL inherit the rotation of the Entity
+            iblComponent.inheritsRotation = true
+            holder.components.set(iblComponent)
+            receiver.components.set(ImageBasedLightReceiverComponent(imageBasedLight: holder))
+        } catch {
+            print(error)
+        }
+    }
+}
+```
+
+```swift
+RealityView { content in
+    let anchor = AnchorEntity()
+    content.add(anchor)
+
+    setupIBL(holder: anchor, receiver: anchor)
+}
+```
+
+`ARView` also have an environment property which we can use to specify IBL for that specific view:
 
 ```swift
 class MyARView: ARView {
@@ -13,34 +49,41 @@ class MyARView: ARView {
         super.init(frame: frame)
         
         Task {
-            let iblResource = try await EnvironmentResource(named: "black")
-            environment.lighting.resource = iblResource
+            do {
+                let environmentResource = try await EnvironmentResource(named: "black")
+                /// ARView `environment` property
+                environment.lighting.resource = environmentResource
+            } catch {
+                print("Could not load environment resource: \(error)")
+            }
         }
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }
 ```
 
-See Yasuhito Nagatomo [excellent Twitter thread](https://x.com/AtarayoSD/status/1838133380455727451) on how to create environment lighting resources for RealityKit.
 
-With RealityRenderer, unlike with ARView and RealityView, no environment lighting is applied by default. In order to setup image based lighting on the scene, use `ImageBasedLightComponent` and `ImageBasedLightReceiverComponent` on the content's parent entity:
 
-```swift
-/// The parent entity of your content
-let anchor = AnchorEntity()
+## Environment Resource
 
-let iblResource = try await EnvironmentResource(named: "IBL007")
-let iblComponent = ImageBasedLightComponent(
-    source: .single(iblResource),
-    intensityExponent: 0 // default value
-)
-anchor.components.set(iblComponent)
-anchor.components.set(ImageBasedLightReceiverComponent(imageBasedLight: anchor))
-```
+What is "IBL007"? It's the name of the HDRI image used in this example, from [Leonid Altman](https://leonidaltman.gumroad.com/l/26-Free-Studio-HDRI-Maps)'s free pack. In order to create IBL resources for Xcode, follow the [excellent Twitter thread](https://x.com/AtarayoSD/status/1838133380455727451) by Yasuhito Nagatomo, and see the [documentation](https://developer.apple.com/documentation/realitykit/environmentresource):
 
-If you need to match the rendering of ARView and RealityRenderer, make sure to supply the same IBL to the content you pass.
+> To add an environment resource to your Xcode project, make a folder with a name that ends in `.skybox` and place a single image inside. Ensure that the image is an environment map of equirectangular projection, also known as a *latitude-longitude projection*. Drag the folder into the Project navigator. In the options pane, choose to create a folder reference (not a group), and add the folder to your app’s targets. At build time, Xcode compiles the image for use as an environment resource and inserts the result into the app bundle.
+>
+> RealityKit supports the same input formats as Image I/O, such as `.png` and `.jpg` However, to achieve rich, vibrant lighting, use a `.exr` or `.hdr` format, which support a wide dynamic range.
 
-### Dynamic Lights
+Xcode project navigator would look like this:
+
+<img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:50%;" />
+
+If I want to remove the environment lighting entirely, I use a full black image as EnvironmentResource.
+
+## Dynamic Lights
 
 You can light a scene by adding a light component to an entity:
 
@@ -57,7 +100,7 @@ lightEntity.components.set(directionalLight)
 anchor.addChild(lightEntity)
 ```
 
-### Shadows
+## Shadows
 
 If you want the light source to cast shadows, add the corresponding shadow component to it:
 
@@ -93,6 +136,6 @@ light.components.set(shadow)
 
 The code above would work well for a top down camera, in a scene where all content
 
-### Links
+## Links
 
 - Complete [this question on StackOverflow](https://stackoverflow.com/questions/77930684/realitykit-incorrect-shadows-with-directional-light).

@@ -13,35 +13,33 @@ The video shows custom hit detection working regardless of FOV and orientation, 
 Below is a full implementation of hit detection that works with any perspective camera. It converts ARView touch position into normalized screen coordinates, constructs a ray using the camera's FOV and orientation, transforms that ray into world space, and passes it to `Scene.raycast`.
 
 ```swift
+/**
+ 
+ # FOV Orientation & Hit Detection
+ 
+ Achraf Kassioui
+ Created 15 July 2026
+ Updated 6 Aug 2026
+ 
+ */
 import SwiftUI
 import RealityKit
 
-// MARK: App
-
-@main
-struct MyApp: App {
-    init() {
-        CameraRequestComponent.registerComponent()
-        CameraSystem.registerSystem()
-    }
-    
-    var body: some SwiftUI.Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
-
 // MARK: SwiftUI
 
-struct ContentView: View {
+struct FOVOrientationView: View {
     @State private var fieldOfView: Float = 60 /// Degrees
     @State private var fieldOfViewIsHorizontal = true
     @State private var useCustomHitDetection = false
     
+    init() {
+        FOVCameraRequestComponent.registerComponent()
+        FOVCameraSystem.registerSystem()
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom) {
-            RealityKitRepresentable(
+            FOVOrientationRepresentable(
                 fieldOfView: fieldOfView,
                 fieldOfViewIsHorizontal: fieldOfViewIsHorizontal,
                 useCustomHitDetection: useCustomHitDetection
@@ -70,28 +68,34 @@ struct ContentView: View {
     }
 }
 
-struct RealityKitRepresentable: UIViewRepresentable {
+#Preview {
+    FOVOrientationView()
+}
+
+// MARK: Representable
+
+struct FOVOrientationRepresentable: UIViewRepresentable {
     let fieldOfView: Float
     let fieldOfViewIsHorizontal: Bool
     let useCustomHitDetection: Bool
     
-    func makeUIView(context: Context) -> RealityKitView {
-        let view = RealityKitView(frame: .zero)
+    func makeUIView(context: Context) -> FOVOrientationARView {
+        let view = FOVOrientationARView(frame: .zero)
         update(view)
         return view
     }
     
-    func updateUIView(_ view: RealityKitView, context: Context) {
+    func updateUIView(_ view: FOVOrientationARView, context: Context) {
         update(view)
     }
     
-    private func update(_ view: RealityKitView) {
+    private func update(_ view: FOVOrientationARView) {
         /// Update hit detection mode
         view.useCustomHitDetection = useCustomHitDetection
         
         /// Update camera entity
         view.camera.components.set(
-            CameraRequestComponent(
+            FOVCameraRequestComponent(
                 fieldOfView: fieldOfView,
                 fieldOfViewIsHorizontal: fieldOfViewIsHorizontal
             )
@@ -99,30 +103,23 @@ struct RealityKitRepresentable: UIViewRepresentable {
     }
 }
 
-#Preview {
-    ContentView()
-}
-
 // MARK: Camera System
 
-struct CameraRequestComponent: Component {
+struct FOVCameraRequestComponent: Component {
     let fieldOfView: Float
     let fieldOfViewIsHorizontal: Bool
 }
 
-class CameraSystem: System {
+class FOVCameraSystem: System {
     
-    static let query = EntityQuery(where: .has(CameraRequestComponent.self))
+    static let query = EntityQuery(where: .has(FOVCameraRequestComponent.self))
     
-    required init(scene: RealityKit.Scene) {
-        
-    }
+    required init(scene: RealityKit.Scene) {}
     
     func update(context: SceneUpdateContext) {
         for entity in context.entities(matching: Self.query, updatingSystemWhen: .rendering) {
-            guard let request = entity.components[CameraRequestComponent.self],
-                  var camera = entity.components[PerspectiveCameraComponent.self]
-                    else {
+            guard let request = entity.components[FOVCameraRequestComponent.self],
+                  var camera = entity.components[PerspectiveCameraComponent.self] else {
                 entity.components.remove(CameraRequestComponent.self)
                 continue
             }
@@ -133,7 +130,7 @@ class CameraSystem: System {
             
             entity.components.set(camera)
             
-            /// The request is complete and must not persist as camera state.
+            /// Remove the transient request component.
             entity.components.remove(CameraRequestComponent.self)
         }
     }
@@ -142,7 +139,7 @@ class CameraSystem: System {
 
 // MARK: ARView
 
-class RealityKitView: ARView {
+class FOVOrientationARView: ARView {
     
     let camera = Entity()
     private var highlightedEntity: ModelEntity?
@@ -175,9 +172,6 @@ class RealityKitView: ARView {
         /// Camera
         var perspective = PerspectiveCameraComponent()
         perspective.fieldOfViewInDegrees = 60
-        
-        /// Horizontal FOV reproduces the built-in ARView hit-detection issue.
-        perspective.fieldOfViewOrientation = .horizontal
         camera.components.set(perspective)
         camera.look(at: .zero, from: [0, 0, 2], relativeTo: nil)
         anchor.addChild(camera)
@@ -268,8 +262,7 @@ class RealityKitView: ARView {
 func customHitTest(screenPoint: CGPoint, view: ARView, cameraEntity: Entity, mask: CollisionGroup = .all) -> [CollisionCastHit] {
     guard view.bounds.width > 0,
           view.bounds.height > 0,
-          let camera = cameraEntity.components[PerspectiveCameraComponent.self]
-            else {
+          let camera = cameraEntity.components[PerspectiveCameraComponent.self] else {
         return []
     }
     
@@ -285,7 +278,7 @@ func customHitTest(screenPoint: CGPoint, view: ARView, cameraEntity: Entity, mas
     let tangentHalfWidth: Float
     let tangentHalfHeight: Float
     
-    /// The field-of-view angle applies to the selected screen axis.
+    /// The field of view angle applies to the selected screen axis.
     switch camera.fieldOfViewOrientation {
     case .vertical:
         tangentHalfHeight = tan(halfFieldOfView)
@@ -309,7 +302,7 @@ func customHitTest(screenPoint: CGPoint, view: ARView, cameraEntity: Entity, mas
         )
     )
     
-    /// Transform the camera-space ray direction into world space.
+    /// Transform the camera space ray direction into world space.
     let worldDirection = cameraEntity.orientation(relativeTo: nil).act(cameraDirection)
     let worldOrigin = cameraEntity.position(relativeTo: nil)
     
