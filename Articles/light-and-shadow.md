@@ -79,7 +79,7 @@ What is "IBL007"? It's the name of the HDRI image used in this example, from [Le
 
 Xcode project navigator would look like this:
 
-<img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:50%;" />
+<img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:25%;" />
 
 If I want to remove the environment lighting entirely, I use a full black image as EnvironmentResource.
 
