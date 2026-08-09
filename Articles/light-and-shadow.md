@@ -4,7 +4,7 @@
 
 ## Environment Lighting
 
-By default, `ARView` and `RealityView` apply image-based lighting (IBL), commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non emissive materials will appear flat black unless a light source is added.
+By default, `ARView` and `RealityView` apply image-based lighting (IBL) to all content, commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non emissive materials will appear flat black unless a light source is added.
 
 https://github.com/user-attachments/assets/012630a2-2d0a-46ac-a108-d59b4612988e
 
@@ -20,7 +20,7 @@ func setupIBL(holder: Entity, receiver: Entity) {
         do {
             let iblResource = try await EnvironmentResource(named: "IBL007")
             var iblComponent = ImageBasedLightComponent(source: .single(iblResource))
-            /// Whether the IBL inherit the rotation of the Entity
+            /// Whether the IBL inherits the rotation of the entity.
             iblComponent.inheritsRotation = true
             holder.components.set(iblComponent)
             receiver.components.set(ImageBasedLightReceiverComponent(imageBasedLight: holder))
@@ -40,7 +40,7 @@ RealityView { content in
 }
 ```
 
-`ARView` also have an environment property which we can use to specify IBL for that specific view:
+`ARView` also has an environment property which we can use to specify IBL for that specific view:
 
 ```swift
 class MyARView: ARView {
@@ -67,11 +67,9 @@ class MyARView: ARView {
 }
 ```
 
-
-
 ## Environment Resource
 
-What is "IBL007"? It's the name of the HDRI image used in this example, from [Leonid Altman](https://leonidaltman.gumroad.com/l/26-Free-Studio-HDRI-Maps)'s free pack. In order to create IBL resources for Xcode, follow the [excellent Twitter thread](https://x.com/AtarayoSD/status/1838133380455727451) by Yasuhito Nagatomo, and see the [documentation](https://developer.apple.com/documentation/realitykit/environmentresource):
+What is "IBL007"? It's the name of the HDRI image used in this example, downloaded from [Leonid Altman](https://leonidaltman.gumroad.com/l/26-Free-Studio-HDRI-Maps)'s free pack. In order to create IBL resources for Xcode, follow the [excellent Twitter thread](https://x.com/AtarayoSD/status/1838133380455727451) by Yasuhito Nagatomo, and see the [documentation](https://developer.apple.com/documentation/realitykit/environmentresource):
 
 > To add an environment resource to your Xcode project, make a folder with a name that ends in `.skybox` and place a single image inside. Ensure that the image is an environment map of equirectangular projection, also known as a *latitude-longitude projection*. Drag the folder into the Project navigator. In the options pane, choose to create a folder reference (not a group), and add the folder to your app’s targets. At build time, Xcode compiles the image for use as an environment resource and inserts the result into the app bundle.
 >
@@ -79,9 +77,9 @@ What is "IBL007"? It's the name of the HDRI image used in this example, from [Le
 
 Xcode project navigator would look like this:
 
-<img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:25%;" />
+<img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:50%;" />
 
-If I want to remove the environment lighting entirely, I use a full black image as EnvironmentResource.
+When I want to remove the environment lighting entirely, I use a full black image as EnvironmentResource for `ImageBasedLightComponent`.
 
 ## Dynamic Lights
 
@@ -134,7 +132,7 @@ let shadow = DirectionalLightComponent.Shadow(maximumDistance: camera.position.y
 light.components.set(shadow)
 ```
 
-The code above would work well for a top down camera, in a scene where all content
+The code above would work well for a top down camera, in a scene where all content [...]
 
 ## Links
 
