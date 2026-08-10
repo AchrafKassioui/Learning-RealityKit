@@ -4,11 +4,11 @@
 
 ## Environment Lighting
 
-By default, `ARView` and `RealityView` apply image-based lighting (IBL) to all content, commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non emissive materials will appear flat black unless a light source is added.
+By default, `ARView` and `RealityView` apply image-based lighting (IBL) to all content, commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non-emissive materials will appear flat black unless a light source is added.
 
-https://github.com/user-attachments/assets/012630a2-2d0a-46ac-a108-d59b4612988e
+https://github.com/user-attachments/assets/a5d864e2-b6bf-44d4-a7b3-e23b9c372716
 
-<video src="../Media/RealityKit-IBL-Toggle.mov" width="33%" controls=""></video>
+<video src="../Media/RealityKit-IBL.mov" width="33%" controls=""></video>
 
 In order to unify the environment lighting across all RealityKit renderers, we can use `ImageBasedLightComponent` and `ImageBasedLightReceiverComponent`. The first component holds the image. The second component specifies which entity tree is lit by the image.
 
@@ -83,57 +83,66 @@ When I want to remove the environment lighting entirely, I use a full black imag
 
 ## Dynamic Lights
 
-You can light a scene by adding a light component to an entity:
+In addition to the root IBL, we can add up to eight light sources in a RealityKit scene. These lights are called dynamic lights and are of three types: point light, directional light, and spot light. Here is an example with [directional light](https://developer.apple.com/documentation/realitykit/directionallightcomponent):
 
 ```swift
+/// Create an entity that will hold the light
 let lightEntity = Entity()
 /// Choose from the available lighting components
 let directionalLight = DirectionalLightComponent(
     color: .white,
     intensity: 1000
 )
-/// Position the light accordingly
-lightEntity.look(at: [0, 0, 0], from: [3, 5, -2], relativeTo: nil)
 lightEntity.components.set(directionalLight)
-anchor.addChild(lightEntity)
+/// Position the light
+lightEntity.look(at: [0, 0, 0], from: [3, 5, -2], relativeTo: nil)
+/// Add to the scene
+content.add(lightEntity)
 ```
+
+https://github.com/user-attachments/assets/be655d2a-4861-4503-9cdc-cea9072e8620
+
+<video src="../Media/RealityKit-DirectLight.mov" width="33%" controls=""></video>
 
 ## Shadows
 
-If you want the light source to cast shadows, add the corresponding shadow component to it:
+Lights don't cast shadows by default. In order to cast shadows, an additional component must be added to the light entity:
 
 ```swift
+/// Use the corresponding shadow component for each light type
 let shadowComponent = DirectionalLightComponent.Shadow()
 lightEntity.components.set(shadowComponent)
 ```
 
-If you want to opt out an entity from casting shadows, use the `DynamicLightShadowComponent`:
+https://github.com/user-attachments/assets/a96ce3be-a61f-41a6-8ab0-cca566f6f556
+
+<video src="../Media/RealityKit-Shadows.mov" width="33%" controls=""></video>
+
+A specific entity can be excluded from casting shadows using `DynamicLightShadowComponent`:
 
 ```swift
-let entityDoesNotCastShadow = Entity()
+let entityDoesNotCastShadow = ModelEntity()
 entityDoesNotCastShadow.components.set(DynamicLightShadowComponent(castsShadow: false))
 ```
 
-If you want to improve the quality of the shadows, use the `maximumDistance` parameter of the shadow component. For example:
+The quality of the shadows depends on the `maximumDistance`:
 
 ```swift
-let shadowComponent = DirectionalLightComponent.Shadow(maximumDistance: 5)
+var shadowComponent = DirectionalLightComponent.Shadow()
+shadowComponent.shadowProjection = .automatic(maximumDistance: 2)
 ```
 
-A maximum distance of 5 means no shadow will be rendered if the camera is farther than 5 meters from the expected shadows. The greater that value is, the poorer the shadow quality is. A maximum distance of 50m will draw shadows that are 50 meters away, but shadows that 1 or 2 meters away from the camera will have a poor quality. If you restrict the distance to 2 meters, the shadow will be much better, but no shadows will be drawn for distant objects.
+The value is the distance from the camera to the plane on which the shadow is projected. Higher values will allow farther entities to cast shadow, at the expense of precision.
 
-A trick I use is to update the maximum distance according to the camera distance. Inside update:
+https://github.com/user-attachments/assets/147f8c67-0388-4b1a-967f-568c2009994d
 
-```swift
-let camera = // get the camera entity
-let light = // get the light entity
+<video src="../Media/RealityKit-ShadowDistance.mp4" width="33%" controls=""></video>
 
-let shadow = DirectionalLightComponent.Shadow(maximumDistance: camera.position.y)
-light.components.set(shadow)
-```
+In my projects where the content lives in specific planes, I change the value dynamically to match the camera zoom.
 
-The code above would work well for a top down camera, in a scene where all content [...]
+Download the full scene code [here](../Code/LightAndShadow.swift).
 
 ## Links
 
+- Shuichi Tsutsumi, [Teapot USDZ model](https://github.com/shu223/ARKit-Sampler/blob/master/usdz/teapot.usdz).
 - Complete [this question on StackOverflow](https://stackoverflow.com/questions/77930684/realitykit-incorrect-shadows-with-directional-light).
