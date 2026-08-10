@@ -12,11 +12,6 @@ import RealityKit
 
 // MARK: View
 
-extension RenderLayer {
-    static let content = RenderLayer("com.LightAndShadow.content")
-    static let backdrop = RenderLayer("com.LightAndShadow.backdrop")
-}
-
 struct LightAndShadowView: View {
     @State private var rootEntity = Entity()
     @State private var lightEntity = Entity()
@@ -43,7 +38,7 @@ struct LightAndShadowView: View {
         ZStack() {
             RealityView { content in
                 content.add(rootEntity)
-
+                
                 /// Add environment lighting request for the scene using the custom ECS.
                 rootEntity.components.set(LightingRequestComponent(requests: [
                     .environmentLightIntensity(Float(environmentLightIntensity))
@@ -73,9 +68,6 @@ struct LightAndShadowView: View {
                 floor.position = [0, -0.025, 0]
                 rootEntity.addChild(floor)
                 
-                floor.components.set(RenderLayerComponent(.content))
-                floor.components.set(OcclusionCullingComponent(isEnabled: false))
-                
                 /// Teapot
                 guard let teapot = try? await ModelEntity(named: "teapot") else {
                     print("Could not load Teapot.usd")
@@ -85,7 +77,7 @@ struct LightAndShadowView: View {
                 var teapotMaterial = PhysicallyBasedMaterial()
                 teapotMaterial.baseColor.tint = .white
                 
-                /// Replace every material slot used by the imported mesh.
+                /// Optionally replace every material used by the imported mesh.
                 if var modelComponent = teapot.model {
                     let materialCount = max(modelComponent.materials.count, 1)
                     modelComponent.materials = Array(repeating: teapotMaterial, count: materialCount)
@@ -95,8 +87,6 @@ struct LightAndShadowView: View {
                 teapot.position = .zero
                 teapot.transform.rotation = .init(angle: .pi, axis: [0, 1, 0])
                 rootEntity.addChild(teapot)
-                
-                teapot.components.set(RenderLayerComponent(.backdrop))
             }
             .realityViewCameraControls(.orbit)
             .ignoresSafeArea()
