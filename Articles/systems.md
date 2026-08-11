@@ -7,8 +7,8 @@ To create a system:
 ```swift
 class MySystem: System {
     
-    /// Note how the Scene uses the full module name "RealityKit.Scene"
-    /// instead of just "Scene". That is to avoid confusion with SwiftUI's Scene.
+    /// Note how Scene is prefixed with the module name "RealityKit".
+    /// This avoids confusion with SwiftUI's Scene.
     required init(scene: RealityKit.Scene) {
         
     }
@@ -27,12 +27,29 @@ struct RepresentableARView: UIViewRepresentable {
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero)
 
-        /// Register a custom system
-        OfflineSystem.registerSystem()
+        /// Register
+        MySystem.registerSystem()
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
 }
 ```
 
-Once registered, the system will work in all scenes of the code base. Like a System, a Scene is a type that we don't instantiate ourselves. A Scene is instantiated anywhere RealityKit content would live: in ARView, RealityView, or RealityRenderer.
+Or in the app entry point:
+
+```swift
+@main
+struct MyApp: App {    
+    init() {
+        MySystem.registerSystem()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+```
+
+Once registered, systems will work in all scenes instantiated by the app. Like `System`, `Scene` is a type that we don't instantiate ourselves. A different Scene is instantiated wherever there is RealityKit content: in ARView, RealityView, or RealityRenderer.
