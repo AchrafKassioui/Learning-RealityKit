@@ -9,7 +9,8 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    var body: some Scene { /// Scene type
+    /// Scene type
+    var body: some Scene {
         WindowGroup {
             HomeView()
         }
@@ -17,21 +18,22 @@ struct MyApp: App {
 }
 ```
 
-In RealityKit, `Scene` is where 3D content lives. RealityKit Scene is used in many places, for example to create a system:
+In RealityKit, `Scene` is where content lives. The type is used in many places, for example to create a system:
 
 ```swift
 import RealityKit
 
 class MySystem: System {
     
-    required init(scene: Scene) { /// Init with a reference to the scene
+    /// Init with a reference to the scene
+    required init(scene: Scene) {
         
     }
     
 }
 ```
 
-If the code file imports both RealityKit and SwiftUI, then the Scene type will require disambiguation:
+If the file imports both RealityKit and SwiftUI, then the `Scene` type will require disambiguation. Use the module name as a prefix:
 
 ```swift
 import SwiftUI
@@ -39,13 +41,14 @@ import RealityKit
 
 class MySystem: System {
     
-    required init(scene: RealityKit.Scene) { /// Disambiguate the Scene type
+    /// Disambiguate the Scene type
+    required init(scene: RealityKit.Scene) {
         
     }
     
 }
 ```
 
-I find it remarkable that the same generic Scene term is used in both frameworks without prefixes. Traditional Apple framework prefix their types, for example `SKScene` for a SpriteKit scene, or `UIView` for a UIKit view.
+I find it remarkable that the same generic `Scene` term is used in both frameworks without prefixes. Traditional Apple framework prefix their types, for example `SKScene` for a SpriteKit scene, or `UIView` for a UIKit view.
 
-Are these prefix-free Scene destined to merge? Are they the last expected occurrence of `scene` in an Apple framework?
+Are these prefix-free types destined to merge? Are they the last expected occurrence of `Scene` in an Apple framework?

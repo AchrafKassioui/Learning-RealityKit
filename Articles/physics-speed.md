@@ -44,5 +44,3 @@ anchor.components.set(physicsSimulation)
 
 /// Now all physics bodies in this simulation will run at the specified speed
 ```
-
-## 
