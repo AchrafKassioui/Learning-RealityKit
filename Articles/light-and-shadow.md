@@ -1,18 +1,18 @@
 # Light & Shadow
 
-*22 Dec 2025*
+*Created 22 Dec 2025, updated 11 Aug 2026*
 
 ## Environment Lighting
 
-By default, `ARView` and `RealityView` apply image-based lighting (IBL) to all content, commonly known as HDRI or skybox. In `RealityRenderer`, no default lighting is applied. Non-emissive materials will appear flat black unless a light source is added.
+By default, `ARView` and `RealityView` apply image-based lighting (IBL) to their content. IBL uses an environment map, commonly known as HDRI, to illuminate and reflect the surrounding environment on virtual objects. 
 
 https://github.com/user-attachments/assets/a5d864e2-b6bf-44d4-a7b3-e23b9c372716
 
 <video src="../Media/RealityKit-IBL.mov" width="33%" controls=""></video>
 
-In order to unify the environment lighting across all RealityKit renderers, we can use `ImageBasedLightComponent` and `ImageBasedLightReceiverComponent`. The first component holds the image. The second component specifies which entity tree is lit by the image.
+`RealityRenderer` however does not apply any IBL by default. Non-emissive materials will appear black unless a light source is added.
 
-Below is code where a same root entity holds both components, therefore lighting all its descendants:
+In order to unify the environment lighting across all RealityKit renderers, we can use `ImageBasedLightComponent` and `ImageBasedLightReceiverComponent`. The first component holds the image. The second component specifies which entity tree is lit by the image. Example:
 
 ```swift
 func setupIBL(holder: Entity, receiver: Entity) {
@@ -79,11 +79,11 @@ Xcode project navigator would look like this:
 
 <img src="../Media/Xcode-Skybox-Folder.png" alt="Xcode-Skybox-Folder" style="width:50%;" />
 
-When I want to remove the environment lighting entirely, I use a full black image as EnvironmentResource for `ImageBasedLightComponent`.
+When I need a scene with no environment lighting, I use a [completely black environment resource](../Media/black.jpg).
 
 ## Dynamic Lights
 
-In addition to the root IBL, we can add up to eight light sources in a RealityKit scene. These lights are called dynamic lights and are of three types: point light, directional light, and spot light. Here is an example with [directional light](https://developer.apple.com/documentation/realitykit/directionallightcomponent):
+In addition to IBL, we can add up to eight light sources in a RealityKit scene. These lights are called dynamic lights and are of three types: point light, directional light, and spot light. Here is an example with [directional light](https://developer.apple.com/documentation/realitykit/directionallightcomponent):
 
 ```swift
 /// Create an entity that will hold the light
@@ -109,7 +109,7 @@ https://github.com/user-attachments/assets/be655d2a-4861-4503-9cdc-cea9072e8620
 Lights don't cast shadows by default. In order to cast shadows, an additional component must be added to the light entity:
 
 ```swift
-/// Use the corresponding shadow component for each light type
+/// Use the corresponding shadow component for each type of light
 let shadowComponent = DirectionalLightComponent.Shadow()
 lightEntity.components.set(shadowComponent)
 ```
@@ -125,24 +125,21 @@ let entityDoesNotCastShadow = ModelEntity()
 entityDoesNotCastShadow.components.set(DynamicLightShadowComponent(castsShadow: false))
 ```
 
-The quality of the shadows depends on the `maximumDistance`:
+The quality of the shadows can be tweaked with `maximumDistance`:
 
 ```swift
 var shadowComponent = DirectionalLightComponent.Shadow()
 shadowComponent.shadowProjection = .automatic(maximumDistance: 2)
 ```
 
-The value is the distance from the camera to the plane on which the shadow is projected. Higher values will allow farther entities to cast shadow, at the expense of precision.
+Increasing the value allows more distant objects from the camera to cast shadows, but at the expense of quality and precision. If your design allows, you can dynamically change that value to match the camera distance from your main content.
 
 https://github.com/user-attachments/assets/147f8c67-0388-4b1a-967f-568c2009994d
 
 <video src="../Media/RealityKit-ShadowDistance.mp4" width="33%" controls=""></video>
 
-In my projects where the content lives in specific planes, I change the value dynamically to match the camera zoom.
-
-Download the full scene code [here](../Code/LightAndShadow.swift).
-
 ## Links
 
+- Download the full scene code [here](../Code/LightAndShadow.swift), the HDRI image [here](../Media/HDRI_007_1024x512.exr), and the teapot model [here](../Media/teapot.usdz).
 - Shuichi Tsutsumi, [Teapot USDZ model](https://github.com/shu223/ARKit-Sampler/blob/master/usdz/teapot.usdz).
-- Complete [this question on StackOverflow](https://stackoverflow.com/questions/77930684/realitykit-incorrect-shadows-with-directional-light).
+- Related [StackOverflow question](https://stackoverflow.com/questions/77930684/realitykit-incorrect-shadows-with-directional-light) this article answers.
