@@ -4,7 +4,7 @@
  
  Achraf Kassioui
  Created 6 Aug 2026
- Updated 10 Aug 2026
+ Updated 11 Aug 2026
  
  */
 import SwiftUI
@@ -105,7 +105,7 @@ struct LightAndShadowView: View {
                         
                         Slider(value: $environmentLightIntensity, in: 0...4, step: 0.1)
                             .onChange(of: environmentLightIntensity) { _, intensity in
-                                /// Request ECS change.
+                                /// Request change through ECS.
                                 var lightingRequestComponent = rootEntity.components[LightingRequestComponent.self] ?? LightingRequestComponent()
                                 lightingRequestComponent.requests.append(.environmentLightIntensity(Float(intensity)))
                                 rootEntity.components.set(lightingRequestComponent)
@@ -125,7 +125,7 @@ struct LightAndShadowView: View {
                             ColorPicker("Light Color", selection: $directLightColor, supportsOpacity: false)
                                 .labelsHidden()
                                 .onChange(of: directLightColor) { _, color in
-                                    /// Request ECS change.
+                                    /// Request change through ECS.
                                     var lightingRequestComponent = lightEntity.components[LightingRequestComponent.self] ?? LightingRequestComponent()
                                     lightingRequestComponent.requests.append(.lightColor(DirectionalLightComponent.Color(color)))
                                     lightEntity.components.set(lightingRequestComponent)
@@ -135,7 +135,7 @@ struct LightAndShadowView: View {
                         
                         Slider(value: $directLightIntensity, in: 0...5000, step: 100)
                             .onChange(of: directLightIntensity) { _, intensity in
-                                /// Request ECS change.
+                                /// Request change through ECS.
                                 var lightingRequestComponent = lightEntity.components[LightingRequestComponent.self] ?? LightingRequestComponent()
                                 lightingRequestComponent.requests.append(.directLightIntensity(Float(intensity)))
                                 lightEntity.components.set(lightingRequestComponent)
@@ -150,13 +150,12 @@ struct LightAndShadowView: View {
                     
                     Toggle("Shadows", isOn: $shadowsAreEnabled)
                         .onChange(of: shadowsAreEnabled) { _, isEnabled in
-                            /// Request ECS change.
+                            /// Request change through ECS.
                             var lightingRequestComponent = lightEntity.components[LightingRequestComponent.self] ?? LightingRequestComponent()
-                            lightingRequestComponent.requests.append(.shadowsAreEnabled(isEnabled))
-                            
-                            if isEnabled {
-                                lightingRequestComponent.requests.append(.shadowDistance(Float(shadowDistance)))
-                            }
+                            lightingRequestComponent.requests.append(contentsOf: [
+                                .shadowsAreEnabled(isEnabled),
+                                .shadowDistance(Float(shadowDistance))
+                            ])
                             
                             lightEntity.components.set(lightingRequestComponent)
                         }
@@ -169,7 +168,7 @@ struct LightAndShadowView: View {
                         
                         Slider(value: $shadowDistance, in: 0...10, step: 0.1)
                             .onChange(of: shadowDistance) { _, distance in
-                                /// Request ECS change.
+                                /// Request change through ECS.
                                 var lightingRequestComponent = lightEntity.components[LightingRequestComponent.self] ?? LightingRequestComponent()
                                 lightingRequestComponent.requests.append(.shadowDistance(Float(distance)))
                                 lightEntity.components.set(lightingRequestComponent)
@@ -209,6 +208,7 @@ struct LightingRequestComponent: Component {
 
 // MARK: Lighting System
 
+@MainActor
 class LightingSystem: System {
     
     private static let lightingQuery = EntityQuery(where: .has(LightingRequestComponent.self))
@@ -246,8 +246,6 @@ class LightingSystem: System {
                     }
                     
                 case .shadowDistance(let maximumDistance):
-                    var shadowComponent = DirectionalLightComponent.Shadow()
-                    shadowComponent.shadowProjection = .automatic(maximumDistance: 2)
                     if var shadow = entity.components[DirectionalLightComponent.Shadow.self] {
                         shadow.shadowProjection = .automatic(maximumDistance: maximumDistance)
                         entity.components.set(shadow)
