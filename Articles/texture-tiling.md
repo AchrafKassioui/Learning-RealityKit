@@ -30,3 +30,5 @@ material.textureCoordinateTransform.rotation = .pi/4
 ```
 
 <img src="../Media/RealityKit-TextureRotation.png" alt="RealityKit-TextureRotation" style="width:33%;" />
+
+All these properties are animatable. A custom system can update them every frame.
